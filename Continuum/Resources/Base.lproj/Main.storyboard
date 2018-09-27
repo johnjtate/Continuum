@@ -320,6 +320,7 @@
                         </connections>
                     </tableView>
                     <connections>
+                        <outlet property="followPostButton" destination="S7N-QP-dVv" id="LK5-e4-JZF"/>
                         <outlet property="photoImageView" destination="GAB-hR-c0X" id="QE2-yI-34X"/>
                     </connections>
                 </tableViewController>

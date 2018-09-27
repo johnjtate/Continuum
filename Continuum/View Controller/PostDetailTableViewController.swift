@@ -12,6 +12,8 @@ class PostDetailTableViewController: UITableViewController {
 
     // MARK: - IBOutlet
     @IBOutlet weak var photoImageView: UIImageView!
+    @IBOutlet weak var followPostButton: UIButton!
+    
     
     // landing pad for segue
     var post: Post? {
@@ -32,6 +34,15 @@ class PostDetailTableViewController: UITableViewController {
     func updateViews() {
         guard let post = post else { return }
         photoImageView.image = post.photo
+        
+        // toggle text on Follow/Unfollow button
+        PostController.shared.checkForSubscription(to: post) { (isSubscribed) in
+            DispatchQueue.main.async {
+                // text needs to read the opposite of isSunscribed
+                let buttonTitle = isSubscribed ? "Unfollow" : "Follow"
+                self.followPostButton.setTitle(buttonTitle, for: .normal)
+            }
+        }
     }
     
     override func viewDidLoad() {
@@ -104,7 +115,19 @@ class PostDetailTableViewController: UITableViewController {
     
     @IBAction func followPostButtonTapped(_ sender: Any) {
         
-        
-        
+        guard let post = post else { return }
+        PostController.shared.toggleSubscriptionTo(commentsForPost: post) { (success, error) in
+            
+            if let error = error {
+                print("There was an error in \(#function) ; \(error)  ; \(error.localizedDescription)")
+                return
+            }
+            
+            if success {
+                DispatchQueue.main.async {
+                    self.updateViews()
+                }
+            }
+        }
     }
 }
